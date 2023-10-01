@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #000;
+  color: #fff;
+}
+
+[data-radix-popper-content-wrapper] {
+  position: absolute !important;
+  width: 100% !important;
+}
+
+.reveal {
+  transition-property: opacity;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+.reveal:hover > span, .reveal:focus > span {
+  transform: translate(0);
+  transition: transform 300ms;
+}
