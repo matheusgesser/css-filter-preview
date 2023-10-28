@@ -4,60 +4,24 @@ import Image from "next/image";
 import { ImageSelector } from "@/components/ImageSelector";
 import { FilterList } from "@/components/FilterList";
 import { FilterSelect } from "@/components/FilterSelect";
-import { useEffect, useState } from "react";
-import { initialState } from "./initialState";
+import { useState } from "react";
 import { copyCssCode } from "../utils/CopyCss";
 import { CustomImage } from "@/components/CustomImage";
 import { LuX } from "react-icons/lu";
+import { useFilters } from "@/hooks/useFilters";
 
 export default function Home() {
-  const [filters, setFilters] = useState(initialState);
-  const [cssCode, setCssCode] = useState("");
   const [imageLink, setImageLink] = useState("");
+  const {
+    cssCode,
+    listedItems,
+    unlistedItems,
+    handleListFilter,
+    handleUnlistFilter,
+    handleChangeFilterValue,
+   } = useFilters();
 
-  useEffect(() => {
-    let appliedFilters = filters.filter(
-      (item) => item.currentValue != item.defaultValue
-    );
-    let newCss = "";
-    appliedFilters.forEach((filter) => {
-      newCss = `${newCss} ${filter.value}(${filter.currentValue}${filter.unit})`;
-    });
-    setCssCode(newCss.trim());
-  }, [filters]);
-
-  function handleListFilter(filter) {
-    const editIndex = filters.findIndex((item) => item.value == filter);
-    let oldFilters = [...filters];
-    oldFilters[editIndex] = {
-      ...oldFilters[editIndex],
-      listing: true,
-    };
-    setFilters(oldFilters);
-  }
-
-  function handleUnlistFilter(filter) {
-    const editIndex = filters.findIndex((item) => item.value == filter);
-    let oldFilters = [...filters];
-    oldFilters[editIndex] = {
-      ...oldFilters[editIndex],
-      currentValue: oldFilters[editIndex].defaultValue,
-      listing: false,
-    };
-    setFilters(oldFilters);
-  }
-
-  function handleChangeValue(value, filter) {
-    const editIndex = filters.findIndex((item) => item.value == filter);
-    let oldFilters = [...filters];
-    oldFilters[editIndex] = {
-      ...oldFilters[editIndex],
-      currentValue: parseInt(value),
-    };
-    setFilters(oldFilters);
-  }
-
-  function changeImage(link) {
+  const changeImage = (link) => {
     setImageLink(link);
   }
 
@@ -70,7 +34,6 @@ export default function Home() {
         ) : (
           <>
             <Image
-              // TODO use this as trigger instead of button in imageselector?
               id="preview-img"
               src={"/default.jpg"}
               alt=""
@@ -94,23 +57,20 @@ export default function Home() {
             </button>
           </div>
         )}
-        {/* Render if there are items listed */}
-        {filters.filter((item) => item.listing).length > 0 && (
+        {listedItems && (
           <FilterList
-            filters={filters.filter((item) => item.listing)}
+            filters={listedItems}
             handleUnlistFilter={handleUnlistFilter}
-            handleChangeValue={handleChangeValue}
+            handleChangeValue={handleChangeFilterValue}
           />
         )}
-        {/* Render if there are items UNlisted */}
-        {filters.filter((item) => !item.listing).length > 0 && (
+        {unlistedItems && (
           <FilterSelect
-            filters={filters.filter((item) => !item.listing)}
+            filters={unlistedItems}
             handleListFilter={handleListFilter}
           />
         )}
-        {/* Render if there are items listed */}
-        {filters.filter((item) => item.listing).length > 0 && (
+        {listedItems && (
           <button
             className="border border-white py-2 rounded-lg w-full max-w-[150px]"
             onClick={() => copyCssCode(cssCode)}
