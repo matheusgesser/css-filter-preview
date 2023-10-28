@@ -1,5 +1,5 @@
 import { initialState } from '@/(home)/initialState';
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export function useFilters() {
     const [filters, setFilters] = useState(initialState);
@@ -28,16 +28,6 @@ export function useFilters() {
       setFilters(newFilters);
     }
 
-    const updatedCssCode = () => {
-        let appliedFilters = filters.filter((item) => item.currentValue != item.defaultValue);
-        let newCss = "";
-        appliedFilters.forEach((filter) => {
-          newCss =
-            `${newCss} ${filter.value}(${filter.currentValue}${filter.unit})`.trim();
-        });
-        return newCss;
-    }
-
     const handleChangeFilterValue = (value, filter) => {
       const editIndex = filters.findIndex((item) => item.value == filter);
       let newFilters = [...filters];
@@ -46,8 +36,19 @@ export function useFilters() {
         currentValue: parseInt(value),
       };
       setFilters(newFilters);
-      setCssCode(updatedCssCode());
     }
+
+    useEffect(() => {
+        let appliedFilters = filters.filter(
+          (item) => item.currentValue != item.defaultValue
+        );
+        let newCss = "";
+        appliedFilters.forEach((filter) => {
+          newCss =
+            `${newCss} ${filter.value}(${filter.currentValue}${filter.unit})`.trim();
+        });
+        setCssCode(newCss);
+    }, [filters])
 
   return {
     cssCode,
