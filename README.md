@@ -12,7 +12,7 @@
 
 ## 🔴 **Live Version**
 
-**<a href="#">Soon</a>**
+**<a href="https://css-filter-preview.vercel.app/">css-filter-preview.vercel.app</a>**
 
 ## 💻 **Technologies**
 
